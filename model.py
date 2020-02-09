@@ -33,8 +33,8 @@ class Kmeans:
         """
         #The distance to be minimized between the centroid and the data_point needs to be defined here.
         Distance = 0
-
-
+        diff= np.square(np.subtract(data_point,centroid))
+        Distance= (np.sum(diff))**(1/2)
         #Write your code above.
         # Calculate Distance b/w data_point and centroid here.
         return Distance
@@ -59,7 +59,11 @@ class Kmeans:
         self.labels = np.zeros(self.N)
 
         for iterator in range(self.T):
-
+            for i in range(self.N):
+                arr = np.zeros(k)
+                for j in range(k):
+                    arr[j]+=self.distance(feature_vector[i],self.centroids[j])
+                self.labels[i]=np.argmin(arr)
 
 
             # Calcluate self.labels above
@@ -67,9 +71,9 @@ class Kmeans:
             self.cal_distortion(feature_vector)
             if verbose:
                 print("Distortion after ", iterator + 1 ," iterations is ", self.distortion)
-
-
-
+            for j in range(k):
+                arr=feature_vector[self.labels==j]
+                self.centroids[j]=np.mean(arr,axis=0)
             # Calculate self.centroids above
             # write your code above
     def cal_distortion(self, feature_vector):
@@ -79,8 +83,10 @@ class Kmeans:
         :return: Nothing.  But after the execution of this function, self.distortion should be updated.
         Distortion: the sum of squared distances of all the data points with their respective centers.
         """
-
-
-
-
+        dis=0
+        for n in range(self.N):
+            label=int(self.labels[n])
+            dist=self.distance(feature_vector[n],self.centroids[label])
+            dis+=dist**2
+        self.distortion=dis
         # calculate self.distortion above.
